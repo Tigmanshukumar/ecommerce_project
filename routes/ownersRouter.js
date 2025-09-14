@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const ownerModel = require('../models/owner-model');
 const bcrypt = require('bcrypt');
-const { generateToken } = require('../utils/generatetoken');
+const { generateToken } = require('../utils/generateToken');
 const isOwnerLoggedin = require('../middlewares/isOwnerLoggedin');
 
 
