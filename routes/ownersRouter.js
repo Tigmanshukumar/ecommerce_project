@@ -117,14 +117,70 @@ router.get('/check', async (req, res) => {
     }
 });
 
+// Initial setup route - only works when no owners exist
+router.post('/setup', async function (req, res) {
+    try {
+        let owners = await ownerModel.find();
+        if (owners.length > 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Admin already exists. Setup not allowed."
+            });
+        }
+
+        let { fullname, email, password } = req.body;
+
+        bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(password, salt, async (err, hash) => {
+                if (err) {
+                    return res.status(500).json({
+                        success: false,
+                        message: "Error creating admin",
+                        error: err.message
+                    });
+                }
+
+                let createdOwner = await ownerModel.create({
+                    fullname,
+                    email,
+                    password: hash
+                });
+
+                console.log("✅ Initial admin created:", {
+                    id: createdOwner._id,
+                    email: createdOwner.email,
+                    fullname: createdOwner.fullname
+                });
+
+                res.status(201).json({
+                    success: true,
+                    message: "Initial admin created successfully",
+                    data: {
+                        id: createdOwner._id,
+                        fullname: createdOwner.fullname,
+                        email: createdOwner.email
+                    }
+                });
+            });
+        });
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: "Error creating admin",
+            error: err.message
+        });
+    }
+});
+
 router.get('/logout', (req, res) => {
     res.cookie('owner-token', '');
     req.flash('success', 'Logged out successfully');
     res.redirect('/owners/login');
 });
 
-if (process.env.NODE_ENV === 'development') {
-    console.log("Development mode activated ✅");
+// Allow owner creation in development OR when no owners exist (for initial setup)
+if (process.env.NODE_ENV === 'development' || process.env.ALLOW_OWNER_CREATION === 'true') {
+    console.log("Owner creation enabled ✅");
     router.post("/create", async function (req, res) {
         try {
             let owners = await ownerModel.find();
