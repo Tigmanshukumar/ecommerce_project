@@ -117,15 +117,73 @@ router.get('/check', async (req, res) => {
     }
 });
 
+// Initial setup page - shows form when no owners exist
+router.get('/setup', async function (req, res) {
+    try {
+        let owners = await ownerModel.find();
+        if (owners.length > 0) {
+            return res.redirect('/owners/login');
+        }
+
+        // Render setup form
+        res.send(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Initial Admin Setup - TechHub</title>
+                <script src="https://cdn.tailwindcss.com"></script>
+            </head>
+            <body class="bg-gray-100 min-h-screen flex items-center justify-center">
+                <div class="bg-white p-8 rounded-lg shadow-md max-w-md w-full">
+                    <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Initial Admin Setup</h2>
+                    <p class="text-gray-600 mb-6 text-center">No admin account found. Create the first admin account.</p>
+                    
+                    <form action="/owners/setup" method="POST" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                            <input name="fullname" type="text" required value="Test Admin"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                            <input name="email" type="email" required value="test@test.com"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                            <input name="password" type="password" required value="test"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <button type="submit" 
+                                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg">
+                            Create Admin Account
+                        </button>
+                    </form>
+                    
+                    <div class="mt-4 text-center">
+                        <a href="/" class="text-blue-600 hover:text-blue-800 text-sm">← Back to Home</a>
+                    </div>
+                </div>
+            </body>
+            </html>
+        `);
+    } catch (err) {
+        res.status(500).send('Error checking admin status: ' + err.message);
+    }
+});
+
 // Initial setup route - only works when no owners exist
 router.post('/setup', async function (req, res) {
     try {
         let owners = await ownerModel.find();
         if (owners.length > 0) {
-            return res.status(400).json({
-                success: false,
-                message: "Admin already exists. Setup not allowed."
-            });
+            return res.send(`
+                <div style="text-align: center; padding: 50px; font-family: Arial;">
+                    <h2>Setup Not Allowed</h2>
+                    <p>Admin already exists.</p>
+                    <a href="/owners/login" style="color: blue;">Go to Login</a>
+                </div>
+            `);
         }
 
         let { fullname, email, password } = req.body;
@@ -133,11 +191,7 @@ router.post('/setup', async function (req, res) {
         bcrypt.genSalt(10, (err, salt) => {
             bcrypt.hash(password, salt, async (err, hash) => {
                 if (err) {
-                    return res.status(500).json({
-                        success: false,
-                        message: "Error creating admin",
-                        error: err.message
-                    });
+                    return res.status(500).send('Error creating admin: ' + err.message);
                 }
 
                 let createdOwner = await ownerModel.create({
@@ -152,23 +206,21 @@ router.post('/setup', async function (req, res) {
                     fullname: createdOwner.fullname
                 });
 
-                res.status(201).json({
-                    success: true,
-                    message: "Initial admin created successfully",
-                    data: {
-                        id: createdOwner._id,
-                        fullname: createdOwner.fullname,
-                        email: createdOwner.email
-                    }
-                });
+                res.send(`
+                    <div style="text-align: center; padding: 50px; font-family: Arial;">
+                        <h2 style="color: green;">✅ Admin Created Successfully!</h2>
+                        <p><strong>Email:</strong> ${createdOwner.email}</p>
+                        <p><strong>Name:</strong> ${createdOwner.fullname}</p>
+                        <br>
+                        <a href="/owners/login" style="background: blue; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+                            Login Now
+                        </a>
+                    </div>
+                `);
             });
         });
     } catch (err) {
-        res.status(500).json({
-            success: false,
-            message: "Error creating admin",
-            error: err.message
-        });
+        res.status(500).send('Error creating admin: ' + err.message);
     }
 });
 
