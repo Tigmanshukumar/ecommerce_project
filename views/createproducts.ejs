@@ -1,0 +1,121 @@
+<%- include('./partials/header') %>
+
+    <% if(success && success.length > 0){ %>
+        <div class="absolute top-5 left-1/2 -translate-x-1/2 -translate-y-1/2 p-3 rounded-md bg-green-500">
+            <span class="inline-block mt-1 mb-1 text-white">
+                <%= success %>
+            </span>
+        </div>
+    <% } %>
+    
+    <% if(error && error.length > 0){ %>
+        <div class="absolute top-5 left-1/2 -translate-x-1/2 -translate-y-1/2 p-3 rounded-md bg-red-500">
+            <span class="inline-block mt-1 mb-1 text-white">
+                <%= error %>
+            </span>
+        </div>
+    <% } %>
+
+            <div class="min-h-screen flex flex-col">
+                <div class="container px-10 py-20 flex flex-grow">
+                    <div class="w-[25%] flex h-screen flex-col items-start">
+                        <div class="flex flex-col">
+                            <a class="block w-fit mb-2" href="/owners/products">All Products</a>
+                            <a class="block w-fit mb-2 font-semibold text-blue-600" href="/owners/admin">Create New Product</a>
+                            <a class="block w-fit mb-2 text-red-600" href="/owners/logout">Admin Logout</a>
+                        </div>
+                    </div>
+                    <main class="w-3/4 bg-white p-8 shadow ml-4">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-bold">Create New Product</h2>
+                            <div class="text-sm text-gray-600">
+                                Total Products: <span class="font-semibold"><%= productCount || 0 %></span>
+                            </div>
+                        </div>
+                        <form autocomplete="off" action="/products/create" method="post" enctype="multipart/form-data" class="space-y-6">
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="ri-image-line mr-1"></i>Product Image
+                                </label>
+                                <input name="image" type="file" accept="image/*" required
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            </div>
+
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Product Name</label>
+                                    <input name="name" type="text" required placeholder="e.g., Intel Core i7-13700K"
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                                    <select name="category" required
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                        <option value="">Select Category</option>
+                                        <option value="prebuiltpc">Pre Built PC</option>
+                                        <option value="cpu">Processors (CPU)</option>
+                                        <option value="gpu">Graphics Cards (GPU)</option>
+                                        <option value="ram">Memory (RAM)</option>
+                                        <option value="storage">Storage (SSD/HDD)</option>
+                                        <option value="motherboard">Motherboards</option>
+                                        <option value="psu">Power Supply (PSU)</option>
+                                        <option value="case">PC Cases</option>
+                                        <option value="cooling">Cooling Systems</option>
+                                        <option value="other">Other Components</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                          
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Price (₹)</label>
+                                    <input name="price" type="number" required placeholder="25000"
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Discount (₹)</label>
+                                    <input name="discount" type="number" placeholder="2000"
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                                <textarea name="description" rows="3" placeholder="Product features and specifications..."
+                                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"></textarea>
+                            </div>
+
+                      
+                            <div class="border-t pt-6">
+                                <h3 class="text-lg font-semibold mb-4 text-gray-700">Display Settings (Optional)</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Background Color</label>
+                                        <input name="bgcolor" type="text" placeholder="#f3f4f6" value="#f3f4f6"
+                                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Panel Color</label>
+                                        <input name="panelcolor" type="text" placeholder="#ffffff" value="#ffffff"
+                                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Text Color</label>
+                                        <input name="textcolor" type="text" placeholder="#1f2937" value="#1f2937"
+                                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="submit" 
+                                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center">
+                                <i class="ri-add-line mr-2"></i>Create Product
+                            </button>
+                        </form>
+                    </main>
+                </div>
+            </div>
+            <%- include('./partials/footer') %>

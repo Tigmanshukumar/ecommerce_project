@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PcWala - PC Parts & Components</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'tech-blue': '#1e40af',
+                        'tech-dark': '#1f2937',
+                        'tech-gray': '#374151',
+                        'tech-light': '#f8fafc'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-tech-light">
+    <nav class="bg-tech-dark text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <i class="ri-computer-line text-2xl text-blue-400 mr-2"></i>
+                    <h3 class="text-xl font-bold">PcWala</h3>
+                    <span class="text-xs text-gray-300 ml-2 mt-1">PC Parts & Components</span>
+                </div>
+                
+                <% if (typeof user !== "undefined" && user) { %>
+                    <div class="flex items-center space-x-6">
+                        <a href="/shop" class="flex items-center hover:text-blue-400 transition-colors">
+                            <i class="ri-store-line mr-1"></i>Shop
+                        </a>
+                        <a href="/cart" class="flex items-center hover:text-blue-400 transition-colors relative">
+                            <i class="ri-shopping-cart-line mr-1"></i>Cart
+                            <% if(user.cart && user.cart.length > 0) { %>
+                                <span class="absolute -top-2 -right-2 bg-red-500 text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                                    <%= user.cart.length %>
+                                </span>
+                            <% } %>
+                        </a>
+                        <div class="flex items-center space-x-2">
+                            <i class="ri-user-line"></i>
+                            <span class="text-sm"><%= user.fullname %></span>
+                        </div>
+                        <a href="/logout" class="bg-red-600 hover:bg-red-700 px-3 py-1 rounded transition-colors">
+                            <i class="ri-logout-box-line mr-1"></i>Logout
+                        </a>
+                    </div>
+                <% } else { %>
+                    <div class="flex items-center space-x-4">
+                        <a href="/" class="hover:text-blue-400 transition-colors">Login</a>
+                        <a href="/owners/login" class="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded transition-colors">
+                            Admin
+                        </a>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </nav>

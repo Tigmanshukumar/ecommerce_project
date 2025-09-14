@@ -1,0 +1,208 @@
+<%- include('./partials/header') %>
+
+   
+    <% if(success && success.length> 0){ %>
+        <div
+            class="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg">
+            <div class="flex items-center">
+                <i class="ri-check-line mr-2"></i>
+                <%= success %>
+            </div>
+        </div>
+        <% } %>
+
+            <% if(error && error.length> 0){ %>
+                <div
+                    class="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg">
+                    <div class="flex items-center">
+                        <i class="ri-error-warning-line mr-2"></i>
+                        <%= error %>
+                    </div>
+                </div>
+                <% } %>
+
+                    
+                    <div class="bg-gray-800 text-white py-8">
+                        <div class="max-w-7xl mx-auto px-4">
+                            <h1 class="text-3xl font-bold mb-2 flex items-center">
+                                <i class="ri-shopping-cart-line mr-3"></i>Shopping Cart
+                            </h1>
+                            <p class="text-gray-300">Review your selected PC components</p>
+                        </div>
+                    </div>
+
+                    <div class="max-w-7xl mx-auto px-4 py-8">
+                        <% if(user.cart && user.cart.length> 0) { %>
+                            <div class="grid lg:grid-cols-3 gap-8">
+                               
+                                <div class="lg:col-span-2">
+                                    <div class="bg-white rounded-lg shadow-md">
+                                        <div class="p-6 border-b">
+                                            <h2 class="text-xl font-semibold flex items-center">
+                                                <i class="ri-list-check mr-2 text-blue-600"></i>
+                                                Cart Items (<%= user.cart.length %>)
+                                            </h2>
+                                        </div>
+
+                                        <div class="divide-y">
+                                            <% user.cart.forEach(function(product, index) { %>
+                                                <% if(product && product._id) { %>
+                                                    <div class="p-6 flex items-center space-x-4">
+                                                        
+                                                        <div
+                                                            class="w-24 h-24 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                                            <% if(product.image) { %>
+                                                                <img class="max-w-full max-h-full object-contain"
+                                                                    src="data:image/jpeg;base64,<%= product.image.toString('base64') %>"
+                                                                    alt="<%= product.name || 'Product' %>">
+                                                                <% } else { %>
+                                                                    <i class="ri-image-line text-3xl text-gray-400"></i>
+                                                                    <% } %>
+                                                        </div>
+
+                                                        
+                                                        <div class="flex-1">
+                                                            <h3 class="font-semibold text-lg text-gray-800 mb-1">
+                                                                <%= product.name || 'Unknown Product' %>
+                                                            </h3>
+                                                            <div class="flex items-center space-x-4 mb-2">
+                                                                <span class="text-2xl font-bold text-green-600">₹<%=
+                                                                        product.price || 0 %></span>
+                                                                <% if(product.discount && product.discount> 0) { %>
+                                                                    <span class="text-sm text-gray-500 line-through">₹
+                                                                        <%= (product.price || 0) + (product.discount ||
+                                                                            0) %>
+                                                                    </span>
+                                                                    <span
+                                                                        class="bg-red-100 text-red-600 text-xs px-2 py-1 rounded">
+                                                                        ₹<%= product.discount %> OFF
+                                                                    </span>
+                                                                    <% } %>
+                                                            </div>
+
+                                                          
+                                                            <div class="flex items-center space-x-3">
+                                                                <div class="flex items-center border rounded-lg">
+                                                                    <button
+                                                                        class="px-3 py-1 hover:bg-gray-100 transition-colors">
+                                                                        <i class="ri-subtract-line"></i>
+                                                                    </button>
+                                                                    <span class="px-4 py-1 border-x">1</span>
+                                                                    <button
+                                                                        class="px-3 py-1 hover:bg-gray-100 transition-colors">
+                                                                        <i class="ri-add-line"></i>
+                                                                    </button>
+                                                                </div>
+
+                                                               
+                                                                <form action="/removefromcart/<%= product._id %>"
+                                                                    method="POST" class="inline">
+                                                                    <button type="submit"
+                                                                        onclick="return confirm('Remove this item from cart?')"
+                                                                        class="text-red-600 hover:text-red-800 flex items-center space-x-1 transition-colors">
+                                                                        <i class="ri-delete-bin-line"></i>
+                                                                        <span>Remove</span>
+                                                                    </button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <% } else { %>
+                                                        
+                                                        <div class="p-6 bg-red-50 border border-red-200 rounded-lg">
+                                                            <div class="flex items-center text-red-600">
+                                                                <i class="ri-error-warning-line mr-2"></i>
+                                                                <span>This product is no longer available</span>
+                                                            </div>
+                                                        </div>
+                                                        <% } %>
+                                                            <% }) %>
+                                        </div>
+                                    </div>
+
+                                    
+                                    <div class="mt-6">
+                                        <a href="/shop"
+                                            class="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors">
+                                            <i class="ri-arrow-left-line mr-2"></i>Continue Shopping
+                                        </a>
+                                    </div>
+                                </div>
+
+                                
+                                <div class="lg:col-span-1">
+                                    <div class="bg-white rounded-lg shadow-md p-6 sticky top-4">
+                                        <h2 class="text-xl font-semibold mb-6 flex items-center">
+                                            <i class="ri-calculator-line mr-2 text-green-600"></i>Order Summary
+                                        </h2>
+
+                                        <div class="space-y-4 mb-6">
+                                            <div class="flex justify-between">
+                                                <span class="text-gray-600">Subtotal (<%= user.cart.length %>
+                                                        items)</span>
+                                                <span class="font-semibold">₹<%= bill - 20 %></span>
+                                            </div>
+                                            <div class="flex justify-between">
+                                                <span class="text-gray-600">Shipping</span>
+                                                <span class="font-semibold text-green-600">FREE</span>
+                                            </div>
+                                            <div class="flex justify-between">
+                                                <span class="text-gray-600">Platform Fee</span>
+                                                <span class="font-semibold">₹20</span>
+                                            </div>
+                                            <div class="border-t pt-4">
+                                                <div class="flex justify-between text-lg">
+                                                    <span class="font-semibold">Total Amount</span>
+                                                    <span class="font-bold text-green-600">₹<%= bill %></span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                       
+                                        <button onclick="proceedToCheckout()"
+                                            class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center">
+                                            <i class="ri-secure-payment-line mr-2"></i>Proceed to Checkout
+                                        </button>
+
+                                      
+                                        <div class="mt-4 text-center">
+                                            <div class="flex items-center justify-center text-sm text-gray-500">
+                                                <i class="ri-shield-check-line mr-1 text-green-500"></i>
+                                                Secure Checkout
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <% } else { %>
+                               
+                                <div class="text-center py-16">
+                                    <div class="bg-white rounded-lg shadow-md p-12 max-w-md mx-auto">
+                                        <i class="ri-shopping-cart-line text-6xl text-gray-300 mb-6"></i>
+                                        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Your Cart is Empty</h2>
+                                        <p class="text-gray-600 mb-8">Looks like you haven't added any PC components
+                                            yet.</p>
+                                        <a href="/shop"
+                                            class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors inline-flex items-center">
+                                            <i class="ri-shopping-bag-line mr-2"></i>Start Shopping
+                                        </a>
+                                    </div>
+                                </div>
+                                <% } %>
+                    </div>
+
+                    <script>
+                        function proceedToCheckout() {
+                            alert('Checkout functionality coming soon! Your order total is ₹<%= bill || 0 %>');
+                        }
+
+                 
+                        setTimeout(function () {
+                            const flashMessages = document.querySelectorAll('.fixed.top-20');
+                            flashMessages.forEach(function (msg) {
+                                msg.style.display = 'none';
+                            });
+                        }, 3000);
+                    </script>
+
+                    <%- include('./partials/footer') %>
