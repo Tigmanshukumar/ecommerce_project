@@ -314,7 +314,6 @@ We welcome contributions to make PcWala even better!
 [![Email](https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:tigmanshukumar5@gmail.com)
 
 📍 **Location:** Muzaffarpur, Bihar, India  
-💼 **Current Role:** Frontend Developer @ Alpha Web & App Solutions  
 🎓 **Education:** BCA Student at IGNOU
 
 </div>
